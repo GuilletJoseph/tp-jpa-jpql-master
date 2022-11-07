@@ -21,8 +21,7 @@ public class ActeurRepositoryTest {
 	 */
 	@Test
 	public void testExtraireActeursTriesParIdentite() {
-		
-		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a", Acteur.class);
+		TypedQuery<Acteur> query = em.createQuery("select a from Acteur a ORDER BY a.identite ASC", Acteur.class);
 		List<Acteur> acteurs = query.getResultList();
 		
 		assertEquals(1137, acteurs.size());
@@ -34,7 +33,7 @@ public class ActeurRepositoryTest {
 	 */
 	@Test
 	public void testExtraireActeursParIdentite() {
-		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a", Acteur.class);
+		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a WHERE identite='Marion Cotillard'", Acteur.class);
 		List<Acteur> acteurs = query.getResultList();
 		
 		assertEquals(1, acteurs.size());
@@ -47,7 +46,7 @@ public class ActeurRepositoryTest {
 	 */
 	@Test
 	public void testExtraireActeursParAnneeNaissance() {
-		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a", Acteur.class);
+		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a where EXTRACT(YEAR FROM anniversaire)=1985", Acteur.class);
 		List<Acteur> acteurs = query.getResultList();
 		
 		assertEquals(10, acteurs.size());
@@ -59,9 +58,11 @@ public class ActeurRepositoryTest {
 	@Test
 	public void testExtraireActeursParRole() {
 		
-		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a", Acteur.class);
+		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a, Role r WHERE r.nom='Harley QUINN'", Acteur.class);
 		List<Acteur> acteurs = query.getResultList();
-		
+		System.out.println(acteurs.size());
+		//System.out.println(acteurs.get(0));
+		//System.out.println(acteurs.get(1));		
 		assertEquals(2, acteurs.size());
 		assertEquals("Margot Robbie", acteurs.get(0).getIdentite());
 		assertEquals("Margot Robbie", acteurs.get(1).getIdentite());
