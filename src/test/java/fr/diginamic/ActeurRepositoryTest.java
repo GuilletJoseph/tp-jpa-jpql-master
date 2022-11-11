@@ -58,11 +58,11 @@ public class ActeurRepositoryTest {
 	@Test
 	public void testExtraireActeursParRole() {
 		
-		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a, Role r WHERE r.nom='Harley QUINN'", Acteur.class);
+		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a JOIN a.roles r WHERE r.nom='Harley QUINN'", Acteur.class);
 		List<Acteur> acteurs = query.getResultList();
-		System.out.println(acteurs.size());
-		//System.out.println(acteurs.get(0));
-		//System.out.println(acteurs.get(1));		
+		System.out.println(acteurs.size());	
+		System.out.println(acteurs.get(0));	
+		
 		assertEquals(2, acteurs.size());
 		assertEquals("Margot Robbie", acteurs.get(0).getIdentite());
 		assertEquals("Margot Robbie", acteurs.get(1).getIdentite());
@@ -73,8 +73,9 @@ public class ActeurRepositoryTest {
 	 */
 	@Test
 	public void testExtraireActeursParFilmParuAnnee() {
-		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a", Acteur.class);
+		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a LEFT JOIN Role r ON a.id=r.acteur LEFT JOIN Film f ON r.film=f.id WHERE f.annee=2015",  Acteur.class);
 		List<Acteur> acteurs = query.getResultList();
+		System.out.println(acteurs.size());
 		assertEquals(140, acteurs.size());
 	}
 	
@@ -84,8 +85,9 @@ public class ActeurRepositoryTest {
 	 */
 	@Test
 	public void testExtraireActeursParPays() {
-		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a", Acteur.class);
+		TypedQuery<Acteur> query = em.createQuery("SELECT DISTINCT a FROM Acteur a LEFT JOIN Role r ON a.id=r.acteur LEFT JOIN Film f ON r.film=f.id JOIN f.pays p WHERE p.nom='France'", Acteur.class);
 		List<Acteur> acteurs = query.getResultList();
+		System.out.println(acteurs.size());
 		assertEquals(158, acteurs.size());
 	}
 	
@@ -95,8 +97,9 @@ public class ActeurRepositoryTest {
 	 */
 	@Test
 	public void testExtraireActeursParListePaysEtAnnee() {
-		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a", Acteur.class);
+		TypedQuery<Acteur> query = em.createQuery("SELECT DISTINCT a FROM Acteur a LEFT JOIN Role r ON a.id=r.acteur LEFT JOIN Film f ON r.film=f.id JOIN f.pays p WHERE f.annee=2017 AND p.nom='France'", Acteur.class);
 		List<Acteur> acteurs = query.getResultList();
+		System.out.println(acteurs.size());
 		assertEquals(24, acteurs.size());
 	}
 	
@@ -107,8 +110,9 @@ public class ActeurRepositoryTest {
 	 */
 	@Test
 	public void testExtraireParRealisateurEntreAnnee() {
-		TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a", Acteur.class);
+		TypedQuery<Acteur> query = em.createQuery("SELECT DISTINCT a FROM Acteur a LEFT JOIN Role r ON a.id=r.acteur LEFT JOIN Film f ON r.film=f.id      JOIN f.realisateurs re WHERE f.annee BETWEEN 2010 AND 2020 AND re.identite='Ridley Scott'", Acteur.class);
 		List<Acteur> acteurs = query.getResultList();
+		System.out.println(acteurs.size());
 		assertEquals(27, acteurs.size());
 	}
 }
